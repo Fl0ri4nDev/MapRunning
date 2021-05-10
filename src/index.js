@@ -1,50 +1,29 @@
 import Activite from "./Activite";
+import map_TraceGPX_Carte from "./map_TraceGPX_Carte";
+import map_TraceGPX from "./map_TraceGPX";
 import positionGPS from "./positionGPS";
 
 import "./styles.css";
 
-var map = window.L.map("map").setView([48.833, 2.333], 13); // LIGNE 18
-
-var osmLayer = window.L.tileLayer(
-  "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
-  {
-    attribution:
-      'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: "fl0ri4ndev/ckoiu1p9k00nq17o8gn1vdwrr",
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken:
-      "pk.eyJ1IjoiZmwwcmk0bmRldiIsImEiOiJja29pdG9zd2cwbnduMndqejYxdjVvOXYzIn0.iZv_HblN-rEXTr_Nh86OzQ"
-  }
-).addTo(map);
-
-/*
-var osmLayer = window.L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-  // LIGNE 20
-  attribution: "© OpenStreetMap contributors",
-  maxZoom: 600
-});
-*/
-
-map.addLayer(osmLayer);
+var map = new map_TraceGPX_Carte().getMap();
 var monActivite = new Activite();
 
-document.getElementById("inputfile").addEventListener("change", function () {
-  var fr = new FileReader();
-  fr.onload = function () {
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(fr.result, "text/xml");
-    get_gpx_data(doc);
+importGPX();
 
-    var polyline = window.L.polyline(monActivite.getArrayPositions()).addTo(
-      map
-    );
-    //console.log(parcours);
-  };
+function importGPX() {
+  document.getElementById("inputfile").addEventListener("change", function () {
+    var fr = new FileReader();
+    fr.onload = function () {
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(fr.result, "text/xml");
+      get_gpx_data(doc);
+      draw_Activite(1, monActivite);
+      draw_Activite(0, monActivite);
+    };
 
-  fr.readAsText(this.files[0]);
-});
+    fr.readAsText(this.files[0]);
+  });
+}
 
 function get_gpx_data(node) {
   if (node.nodeName == "trkpt") {
@@ -59,4 +38,12 @@ function get_gpx_data(node) {
     }
 }
 
-//console.log();
+function draw_Activite(pTypeCarte, pActivite) {
+  if (pTypeCarte === 1) {
+    var myTrace = new map_TraceGPX();
+    myTrace.drawAllPosition(pActivite.parcours);
+  } else {
+    var polyline = window.L.polyline(pActivite.getArrayPositions()).addTo(map);
+    map.fitBounds(polyline.getBounds());
+  }
+}

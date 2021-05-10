@@ -6,6 +6,28 @@ export default class Activite {
     this.parcours = [];
   }
 
+  getMiddle() {
+    var i;
+    var minLatitude, maxLatitude;
+    var minLongitude, maxLongitude;
+    for (i = 0; i < this.parcours.length; i++) {
+      if (this.parcours[i].getLat() < minLatitude)
+        minLatitude = this.parcours[i].getLat();
+      if (this.parcours[i].getLat() > maxLatitude)
+        maxLatitude = this.parcours[i].getLat();
+
+      if (this.parcours[i].getLon() < minLongitude)
+        minLongitude = this.parcours[i].getlon();
+      if (this.parcours[i].getLon() > maxLongitude)
+        maxLongitude = this.parcours[i].getLon();
+    }
+
+    var middlePosition = new PositionGPS(
+      (minLatitude + maxLatitude) / 2,
+      (minLongitude + maxLongitude) / 2
+    );
+    return middlePosition;
+  }
   getArrayPositions() {
     var result = [];
     var i;
@@ -15,7 +37,6 @@ export default class Activite {
       currentPosition.push(this.parcours[i].getLon());
       result.push(currentPosition);
     }
-    console.log(result);
     return result;
   }
 
