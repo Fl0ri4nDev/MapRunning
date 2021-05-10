@@ -1,6 +1,7 @@
 export default class map_TraceGPX_Carte {
   constructor() {
     this.map = window.L.map("map").setView([48.833, 2.333], 13); // LIGNE 18
+    //Carte réalisée via Mapbox
 
     var osmLayer = window.L.tileLayer(
       "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
@@ -22,7 +23,7 @@ export default class map_TraceGPX_Carte {
     return this.map;
   }
 }
-
+//Mp
 /*
 var osmLayer = window.L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
   // LIGNE 20

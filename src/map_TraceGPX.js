@@ -76,8 +76,6 @@ export default class map_TraceGPX {
         ctx.lineTo(x1, y1);
         ctx.stroke();
       }
-
-      //ctx.fillRect(x, y, this.canvas.width / 200, this.canvas.width / 200);
     }
   }
 }
