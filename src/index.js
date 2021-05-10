@@ -28,40 +28,35 @@ var osmLayer = window.L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
 */
 
 map.addLayer(osmLayer);
-
 var monActivite = new Activite();
-
-var polyline = window.L.polyline([
-  [monActivite.getPosition(0).getLat(), monActivite.getPosition(0).getLon()],
-  [51.503, -0.06],
-  [51.51, -0.047]
-]).addTo(map);
 
 document.getElementById("inputfile").addEventListener("change", function () {
   var fr = new FileReader();
   fr.onload = function () {
-    document.getElementById("output").textContent = fr.result;
     var parser = new DOMParser();
     var doc = parser.parseFromString(fr.result, "text/xml");
-    console.log(doc);
+    get_gpx_data(doc);
+
+    var polyline = window.L.polyline(monActivite.getArrayPositions()).addTo(
+      map
+    );
+    //console.log(parcours);
   };
 
   fr.readAsText(this.files[0]);
 });
 
-function get_gpx_data(node, result) {
-  var parcours = [];
-
-  if (!result) result = { segments: [] };
-
+function get_gpx_data(node) {
   if (node.nodeName == "trkpt") {
     var myPos = new positionGPS(
       parseFloat(node.attributes["lat"].value),
-      parseFloat(snode.attributes["lon"].value)
+      parseFloat(node.attributes["lon"].value)
     );
-    parcours.push(myPos);
+    monActivite.parcours.push(myPos);
   } else
     for (var i = 0; i < node.childNodes.length; i++) {
-      get_gpx_data(node.childNodes[i], result);
+      get_gpx_data(node.childNodes[i]);
     }
 }
+
+//console.log();

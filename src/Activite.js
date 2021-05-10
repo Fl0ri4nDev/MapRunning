@@ -4,7 +4,19 @@ export default class Activite {
     this.nom = "Activité #1";
     this.date = "Date Activité";
     this.parcours = [];
-    this.parcours.push(new PositionGPS(48.865618, 2.337194));
+  }
+
+  getArrayPositions() {
+    var result = [];
+    var i;
+    for (i = 0; i < this.parcours.length; i++) {
+      var currentPosition = [];
+      currentPosition.push(this.parcours[i].getLat());
+      currentPosition.push(this.parcours[i].getLon());
+      result.push(currentPosition);
+    }
+    console.log(result);
+    return result;
   }
 
   getPosition(pIndex) {
